@@ -1,40 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import SearchBar from "../components/SearchBar";
 import RecipeCard from "../components/RecipeCard";
+import { useRecipeStore } from "../store/recipeStore";
 
 export default function RecipeList() {
-  const [recipes, setRecipes] = useState([]);
-  const [query, setQuery] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { recipes, loading, searchTerm, fetchRecipes } = useRecipeStore();
 
-  const fetchRecipes = async (searchTerm = "") => {
-    setLoading(true);
-    try {
-      const url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${searchTerm}`;
-      const res = await fetch(url);
-      const data = await res.json();
-      setRecipes(data.meals || []); // empty array if no result
-    } catch (error) {
-      console.error("Error fetching recipes:", error);
-    }
-    setLoading(false);
-  };
-
-  // fetch recipes on mount (default load)
+  // initial load + live search with a tiny debounce
   useEffect(() => {
-    fetchRecipes();
-  }, []);
-
-  // fetch recipes when query changes
-  useEffect(() => {
-    if (query !== "") {
-      fetchRecipes(query);
-    }
-  }, [query]);
+    const t = setTimeout(() => fetchRecipes(), 400);
+    return () => clearTimeout(t);
+  }, [searchTerm, fetchRecipes]);
 
   return (
     <div className="p-6">
-      <SearchBar onSearch={setQuery} />
+      <SearchBar />
 
       {loading && <p className="text-center">Loading...</p>}
 

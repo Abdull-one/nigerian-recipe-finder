@@ -1,24 +1,18 @@
-import { useState } from "react";
+import { useRecipeStore } from "../store/recipeStore";
 
-export default function SearchBar({ onSearch }) {
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const handleChange = (e) => {
-    const value = e.target.value;
-    setSearchTerm(value);
-    onSearch(value); // update parent (RecipeList) live
-  };
+export default function SearchBar() {
+  const searchTerm = useRecipeStore((s) => s.searchTerm);
+  const setSearchTerm = useRecipeStore((s) => s.setSearchTerm);
 
   return (
-    <div className="flex justify-center mb-4">
+    <div className="max-w-xl mx-auto">
       <input
         type="text"
-        value={searchTerm}
-        onChange={handleChange}
         placeholder="Search recipes..."
-        className="w-full max-w-md px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="w-full rounded-md border px-4 py-2 outline-none"
       />
     </div>
   );
 }
-
