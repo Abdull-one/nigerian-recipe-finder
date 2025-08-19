@@ -1,32 +1,52 @@
-import { useState, useEffect } from "react";
-import { searchRecipes } from "../services/api";
+import { useEffect, useState } from "react";
+import SearchBar from "../components/SearchBar";
 import RecipeCard from "../components/RecipeCard";
 
 export default function RecipeList() {
   const [recipes, setRecipes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [query, setQuery] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    async function fetchData() {
-      const results = await searchRecipes("rice"); // default query
-      if (results.length === 0) {
-        setError("No recipes found. Try another search!");
-      }
-      setRecipes(results);
-      setLoading(false);
+  const fetchRecipes = async (searchTerm = "") => {
+    setLoading(true);
+    try {
+      const url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${searchTerm}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      setRecipes(data.meals || []); // empty array if no result
+    } catch (error) {
+      console.error("Error fetching recipes:", error);
     }
-    fetchData();
+    setLoading(false);
+  };
+
+  // fetch recipes on mount (default load)
+  useEffect(() => {
+    fetchRecipes();
   }, []);
 
-  if (loading) return <p className="text-center mt-10">Loading recipes...</p>;
-  if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
+  // fetch recipes when query changes
+  useEffect(() => {
+    if (query !== "") {
+      fetchRecipes(query);
+    }
+  }, [query]);
 
   return (
-    <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-      {recipes.map((recipe) => (
-        <RecipeCard key={recipe.idMeal} recipe={recipe} />
-      ))}
+    <div className="p-6">
+      <SearchBar onSearch={setQuery} />
+
+      {loading && <p className="text-center">Loading...</p>}
+
+      {!loading && recipes.length === 0 && (
+        <p className="text-center text-gray-500">No results found</p>
+      )}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-4">
+        {recipes.map((recipe) => (
+          <RecipeCard key={recipe.idMeal} recipe={recipe} />
+        ))}
+      </div>
     </div>
   );
 }
