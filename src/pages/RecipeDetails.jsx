@@ -1,86 +1,70 @@
-// src/pages/RecipeDetails.jsx
-import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { fetchRecipeById } from "../services/api";
 
-export default function RecipeDetails() {
-  const { id } = useParams(); // get recipe ID from URL
+export default function RecipeDetails({ favorites = [], addFavorite, removeFavorite }) {
+  const { id } = useParams();
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchRecipe() {
-      try {
-        const res = await fetch(
-          `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
-        );
-        const data = await res.json();
-        setRecipe(data.meals[0]);
-      } catch (error) {
-        console.error("Error fetching recipe details:", error);
-      } finally {
+    let mounted = true;
+    async function load() {
+      setLoading(true);
+      const r = await fetchRecipeById(id);
+      if (mounted) {
+        setRecipe(r);
         setLoading(false);
       }
     }
-    fetchRecipe();
+    load();
+    return () => (mounted = false);
   }, [id]);
 
-  if (loading) return <p className="text-center p-4">Loading recipe...</p>;
-  if (!recipe) return <p className="text-center p-4">Recipe not found.</p>;
+  if (loading) return <p>Loading...</p>;
+  if (!recipe) return <p>Recipe not found.</p>;
 
-  // Extract ingredients + measures
+  const isFav = favorites.some((f) => f.idMeal === recipe.idMeal);
+
+  // collect ingredients + measures
   const ingredients = [];
   for (let i = 1; i <= 20; i++) {
-    const ingredient = recipe[`strIngredient${i}`];
+    const ing = recipe[`strIngredient${i}`];
     const measure = recipe[`strMeasure${i}`];
-    if (ingredient) {
-      ingredients.push(`${ingredient} - ${measure}`);
+    if (ing && ing.trim()) {
+      ingredients.push(`${ing}${measure ? ` — ${measure.trim()}` : ""}`);
     }
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">{recipe.strMeal}</h1>
-      <img
-        src={recipe.strMealThumb}
-        alt={recipe.strMeal}
-        className="rounded-lg shadow mb-6"
-      />
+    <div className="max-w-3xl mx-auto">
+      <h1 className="text-2xl font-bold mb-3">{recipe.strMeal}</h1>
+      <img src={recipe.strMealThumb} alt={recipe.strMeal} className="w-full rounded mb-4" />
 
-      <h2 className="text-xl font-semibold mb-2">Ingredients</h2>
-      <ul className="list-disc list-inside mb-4">
-        {ingredients.map((item, index) => (
-          <li key={index}>{item}</li>
+      {isFav ? (
+        <button onClick={() => removeFavorite(recipe.idMeal)} className="bg-red-500 text-white px-4 py-2 rounded mb-4">
+          Remove from favorites
+        </button>
+      ) : (
+        <button onClick={() => addFavorite(recipe)} className="bg-green-600 text-white px-4 py-2 rounded mb-4">
+          Add to favorites
+        </button>
+      )}
+
+      <h2 className="text-xl font-semibold mt-4">Ingredients</h2>
+      <ul className="list-disc ml-6 mb-4">
+        {ingredients.map((it, idx) => (
+          <li key={idx}>{it}</li>
         ))}
       </ul>
 
-      <h2 className="text-xl font-semibold mb-2">Instructions</h2>
-      <p className="whitespace-pre-line mb-6">{recipe.strInstructions}</p>
+      <h2 className="text-xl font-semibold">Instructions</h2>
+      <p className="whitespace-pre-line">{recipe.strInstructions}</p>
 
       {recipe.strYoutube && (
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-2">Video</h2>
-          <iframe
-            width="100%"
-            height="315"
-            src={recipe.strYoutube.replace("watch?v=", "embed/")}
-            title="Recipe video"
-            allowFullScreen
-          ></iframe>
+        <div className="mt-4">
+          <a href={recipe.strYoutube} target="_blank" rel="noreferrer" className="text-blue-600 underline">Watch on YouTube</a>
         </div>
-      )}
-
-      {recipe.strSource && (
-        <p>
-          Source:{" "}
-          <a
-            href={recipe.strSource}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 underline"
-          >
-            {recipe.strSource}
-          </a>
-        </p>
       )}
     </div>
   );
