@@ -1,45 +1,48 @@
-import { useState } from "react";
+ import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Menu, X } from "lucide-react";
 
 export default function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <nav className="bg-green-700 text-white shadow-md">
-      <div className="container mx-auto flex justify-between items-center px-4 py-3">
-        {/* Logo */}
-        <Link to="/" className="text-xl font-bold">
-          Nigerian Recipe Finder
-        </Link>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <Link to="/" className="text-xl font-bold">
+            Nigerian Recipe Finder 🇳🇬
+          </Link>
 
-        {/* Desktop Menu */}
-        <div className="hidden md:flex space-x-6">
-          <Link to="/">Home</Link>
-          <Link to="/recipes">Recipes</Link>
-          <Link to="/favorites">Favorites</Link>
-          <Link to="/add-recipe">Add Recipe</Link>
-          <Link to="/about">About</Link>
-          <Link to="/contact">Contact</Link>
+          {/* Desktop Menu */}
+          <div className="hidden md:flex space-x-6">
+            <Link to="/" className="hover:text-yellow-300">Home</Link>
+            <Link to="/recipes" className="hover:text-yellow-300">Recipes</Link>
+            <Link to="/favorites" className="hover:text-yellow-300">Favorites</Link>
+            <Link to="/add-recipe" className="hover:text-yellow-300">Add Recipe</Link>
+            <Link to="/about" className="hover:text-yellow-300">About</Link>
+            <Link to="/contact" className="hover:text-yellow-300">Contact</Link>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {isOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
         </div>
-
-        {/* Mobile Toggle */}
-        <button
-          className="md:hidden text-2xl"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          ☰
-        </button>
       </div>
 
-      {/* Mobile Menu */}
-      {menuOpen && (
-        <div className="md:hidden bg-green-600 flex flex-col items-start px-4 py-2 space-y-2">
-          <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
-          <Link to="/recipes" onClick={() => setMenuOpen(false)}>Recipes</Link>
-          <Link to="/favorites" onClick={() => setMenuOpen(false)}>Favorites</Link>
-          <Link to="/add-recipe" onClick={() => setMenuOpen(false)}>Add Recipe</Link>
-          <Link to="/about" onClick={() => setMenuOpen(false)}>About</Link>
-          <Link to="/contact" onClick={() => setMenuOpen(false)}>Contact</Link>
+      {/* Mobile Dropdown */}
+      {isOpen && (
+        <div className="md:hidden bg-green-600 px-4 py-2 space-y-2">
+          <Link to="/" className="block hover:text-yellow-300">Home</Link>
+          <Link to="/recipes" className="block hover:text-yellow-300">Recipes</Link>
+          <Link to="/favorites" className="block hover:text-yellow-300">Favorites</Link>
+          <Link to="/add-recipe" className="block hover:text-yellow-300">Add Recipe</Link>
+          <Link to="/about" className="block hover:text-yellow-300">About</Link>
+          <Link to="/contact" className="block hover:text-yellow-300">Contact</Link>
         </div>
       )}
     </nav>

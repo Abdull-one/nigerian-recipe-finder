@@ -72,10 +72,20 @@ git commit -m "Add Favorites page and basic favorite recipe functionality"
 git add .
 git commit -m "Add Recipe page with basic form for manual recipe entry"
 
----
+###  Day 9 – Implement Recipe Details Page (Capstone Part 3: Continue Building)
+- Created `RecipeDetail.jsx` page inside `src/pages/`.
+- Added React Router dynamic route `/recipe/:id`.
+- Connected `RecipeCard` → `RecipeDetail` with a `Link` button ("View Details").
+- Used TheMealDB API to fetch single recipe details by `idMeal`.
+- Displayed recipe image, title, category, area, instructions, and ingredients in a clean layout.
+- Added simple "Back to Recipes" navigation.
 
-## Next Steps
-- Improve recipe card design with animations
-- Add personalized recommendations
-- Implement persistent storage for favorites (localStorage or backend)
-- Polish responsive design and accessibility
+**Files Created/Updated:**
+- `src/pages/RecipeDetail.jsx`
+- `src/pages/RecipeList.jsx` (added link to details)
+- `src/App.jsx` (updated Routes)
+
+**Commit:**
+```bash
+git add .
+git commit -m "Implement Recipe Details page with React Router and dynamic params"
