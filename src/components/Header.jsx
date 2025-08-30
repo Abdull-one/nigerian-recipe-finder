@@ -1,56 +1,49 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import SearchBar from "./SearchBar";
 
-const Header = () => {
-  return (
-    <header className="bg-green-700 text-white p-4 shadow-md">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between">
-        {/* Logo */}
-        <h1 className="text-2xl font-bold">Nigerian Recipe Finder</h1>
+export default function Header({ onSearch }) {
+  const [open, setOpen] = useState(false);
 
-        {/* Nav links in a row with spacing */}
-        <nav className="mt-4 md:mt-0">
-          <ul className="flex flex-wrap gap-6 text-lg">
-            <li>
-              <Link to="/" className="hover:text-yellow-300">
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link to="/recipes" className="hover:text-yellow-300">
-                Recipes
-              </Link>
-            </li>
-            <li>
-              <Link to="/favorites" className="hover:text-yellow-300">
-                Favorites
-              </Link>
-            </li>
-            <li>
-              <Link to="/add" className="hover:text-yellow-300">
-                Add Recipe
-              </Link>
-            </li>
-            <li>
-              <Link to="/about" className="hover:text-yellow-300">
-                About
-              </Link>
-            </li>
-            <li>
-              <Link to="/contact" className="hover:text-yellow-300">
-                Contact
-              </Link>
-            </li>
-          </ul>
+  return (
+    <header className="bg-green-600 text-white">
+      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <h1 className="text-xl font-bold">Nigerian Recipe Finder</h1>
+
+        {/* Desktop menu */}
+        <nav className="hidden md:flex gap-8 items-center">
+          <Link to="/">Home</Link>
+          <Link to="/recipes">Recipes</Link>
+          <Link to="/favorites">Favorites</Link>
+          <Link to="/add">Add Recipe</Link>
+          <Link to="/about">About</Link>
+          <Link to="/contact">Contact</Link>
         </nav>
 
-        {/* SearchBar */}
-        <div className="mt-4 md:mt-0">
-          <SearchBar />
-        </div>
+        {/* Mobile hamburger */}
+        <button
+          className="md:hidden text-2xl font-bold"
+          onClick={() => setOpen((s) => !s)}
+          aria-label="Toggle menu"
+        >
+          ☰
+        </button>
       </div>
+
+      {/* Mobile menu (only visible when open) */}
+      {open && (
+        <nav className="md:hidden bg-green-500 px-4 py-3 flex flex-col gap-3">
+          <Link to="/" onClick={() => setOpen(false)}>Home</Link>
+          <Link to="/recipes" onClick={() => setOpen(false)}>Recipes</Link>
+          <Link to="/favorites" onClick={() => setOpen(false)}>Favorites</Link>
+          <Link to="/add" onClick={() => setOpen(false)}>Add Recipe</Link>
+          <Link to="/about" onClick={() => setOpen(false)}>About</Link>
+          <Link to="/contact" onClick={() => setOpen(false)}>Contact</Link>
+        </nav>
+      )}
+
+      {/* Search bar - single instance, below nav */}
+      <SearchBar onSearch={onSearch} />
     </header>
   );
-};
-
-export default Header;
+}

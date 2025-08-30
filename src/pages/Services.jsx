@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchRecipes, fetchRecipeById, searchMeals } from "../services/api";
+import { getServices } from "../services/api";
 
 const Services = () => {
   const [services, setServices] = useState([]);
@@ -9,7 +9,7 @@ const Services = () => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const data = await getServices(); // ✅ from services/api.js
+        const data = await getServices(); 
         setServices(data);
       } catch (err) {
         console.error("Error fetching services:", err);

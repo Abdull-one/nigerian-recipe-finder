@@ -1,23 +1,46 @@
-const BASE_URL = "https://www.themealdb.com/api/json/v1/1";
+const API_URL = "https://www.themealdb.com/api/json/v1/1";
 
-export async function searchRecipes(query = "") {
-  try {
-    const res = await fetch(`${BASE_URL}/search.php?s=${encodeURIComponent(query)}`);
-    const data = await res.json();
-    return data.meals || [];
-  } catch (err) {
-    console.error("searchRecipes error:", err);
-    return [];
-  }
-}
+// fetch list of recipes
+export const fetchRecipes = async (query) => {
+  const res = await fetch(`${API_URL}/search.php?s=${query}`);
+  const data = await res.json();
+  return data.meals || [];
+};
 
-export async function fetchRecipeById(id) {
-  try {
-    const res = await fetch(`${BASE_URL}/lookup.php?i=${encodeURIComponent(id)}`);
-    const data = await res.json();
-    return data.meals ? data.meals[0] : null;
-  } catch (err) {
-    console.error("fetchRecipeById error:", err);
-    return null;
-  }
-}
+// fetch single recipe by id
+export const fetchRecipeById = async (id) => {
+  const res = await fetch(`${API_URL}/lookup.php?i=${id}`);
+  const data = await res.json();
+  return data.meals ? data.meals[0] : null;
+};
+
+// search meals (alias to fetchRecipes)
+export const searchMeals = async (query) => {
+  return fetchRecipes(query);
+};
+
+// ✅ alias for compatibility (so App.jsx doesn’t break)
+export const searchRecipes = async (query) => {
+  return fetchRecipes(query);
+};
+
+// mock service list (since MealDB doesn’t provide "services")
+export const getServices = async () => {
+  return [
+    {
+      id: 1,
+      name: "Recipe Search",
+      description: "Find Nigerian and international meals using keywords.",
+    },
+    {
+      id: 2,
+      name: "Meal Details",
+      description: "View detailed instructions, ingredients, and images.",
+    },
+    {
+      id: 3,
+      name: "Favorites",
+      description: "Save your favorite recipes for quick access.",
+    },
+  ];
+};

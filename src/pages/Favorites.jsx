@@ -1,18 +1,20 @@
 import RecipeCard from "../components/RecipeCard";
 
-export default function Favorites({ favorites = [], removeFavorite, addFavorite }) {
+export default function Favorites({ favorites, removeFavorite }) {
+  if (favorites.length === 0) {
+    return <p className="text-center mt-10 text-gray-500">No favorite recipes yet.</p>;
+  }
+
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">My Favorites</h1>
-      {favorites.length === 0 ? (
-        <p>No favorites yet. Add some from the Recipes page.</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {favorites.map((r) => (
-            <RecipeCard key={r.idMeal} recipe={r} favorites={favorites} removeFavorite={removeFavorite} addFavorite={addFavorite} />
-          ))}
-        </div>
-      )}
+    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+      {favorites.map((recipe) => (
+        <RecipeCard
+          key={recipe.idMeal}
+          recipe={recipe}
+          favorites={favorites}
+          removeFavorite={removeFavorite}
+        />
+      ))}
     </div>
   );
 }

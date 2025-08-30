@@ -89,3 +89,19 @@ git commit -m "Add Recipe page with basic form for manual recipe entry"
 ```bash
 git add .
 git commit -m "Implement Recipe Details page with React Router and dynamic params"
+
+
+## Day 10 Progress – Capstone (Part 4: Continue Building)
+
+- Implemented React Router with multiple pages:
+  - Home (recipes display)
+  - About
+  - Services
+  - Contact (with phone/email details)
+  - Favorites
+  - Add Recipe
+- Navbar updated with links to all pages.
+- Pages now accessible via proper routes (e.g., `/about`, `/services`, `/contact`, etc.).
+- Prepared for demo video recording to showcase functionality (whether working perfectly or not).
+
+Commit "Added multi-page routing (Home, About, Services, Contact, Favorites, Add Recipe) with Navbar navigation"

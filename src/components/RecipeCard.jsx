@@ -1,17 +1,26 @@
-// src/components/RecipeCard.jsx
+export default function RecipeCard({ recipe, favorites = [], addFavorite, removeFavorite }) {
+  const isFavorite = favorites.some((f) => f.idMeal === recipe.idMeal);
 
-export default function RecipeCard({ recipe }) {
   return (
-    <div className="bg-white rounded-2xl shadow hover:shadow-lg transition p-4 flex flex-col">
+    <div className="bg-white rounded-xl shadow hover:shadow-lg transition p-4 flex flex-col">
       <img
-        src={recipe.strMealThumb || "https://via.placeholder.com/300"}
+        src={recipe.strMealThumb || "https://via.placeholder.com/600x400?text=No+Image"}
         alt={recipe.strMeal}
-        className="rounded-xl mb-4 w-full h-48 object-cover"
+        className="w-full h-44 object-cover rounded-md mb-4"
       />
-      <h3 className="text-lg font-semibold mb-2">{recipe.strMeal}</h3>
-      <p className="text-sm text-gray-600">
-        {recipe.strArea} • {recipe.strCategory}
-      </p>
+
+      <h3 className="font-bold text-lg mb-2">{recipe.strMeal}</h3>
+      <p className="text-gray-600 text-sm mb-4">{recipe.strCategory} • {recipe.strArea}</p>
+
+      {isFavorite ? (
+        <button onClick={() => removeFavorite && removeFavorite(recipe.idMeal)} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+          Remove Favorite
+        </button>
+      ) : (
+        <button onClick={() => addFavorite && addFavorite(recipe)} className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
+          Add Favorite
+        </button>
+      )}
     </div>
   );
 }
